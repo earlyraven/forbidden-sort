@@ -15,3 +15,8 @@ npm WARN my-app No description
 npm WARN my-app No repository field.
 npm WARN my-app No README data
 npm WARN my-app No license field.
+
+To run tests and generate coverage report (running prettier-format is optional, but recommeneded):
+npm install
+npm run prettier-format
+npm test

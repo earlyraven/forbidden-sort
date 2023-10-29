@@ -1,0 +1,5 @@
+# Jest code coverage reports
+coverage
+
+# Node modules
+node_modules
