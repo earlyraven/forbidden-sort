@@ -1,10 +1,15 @@
 const {
+  checkIfSorted,
+  getShuffled,
+  shuffleArray,
   parrotSortDescription,
   parrotSort,
   stalinSortDescription,
   stalinSort,
   sleepSortDescription,
   sleepSort,
+  bogoSortDescription,
+  bogoSort,
 } = require('./index'); // Replace './index' with the appropriate path to your module
 
 // Test parrotSortDescription
@@ -89,10 +94,213 @@ test('sleepSort correctly sorts a non-empty input array with zero values', async
   expect(sortedArray).toEqual(expectedResult);
 }, sleepSortTimout);
 
-// Test sleepSort with a larger input array
 test('sleepSort correctly sorts a non-empty input array with values rather close to each other (delta ~= .1).', async () => {
   const inputArray = [1.6, 1.2, 1.5, 1.3, 1.1, 1.0, 1.7];
   const sortedArray = await sleepSort(inputArray);
   const expectedResult = [1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.7];
   expect(sortedArray).toEqual(expectedResult);
 }, sleepSortTimout);
+
+// Test checkIfSorted
+test('checkIfSorted correctly identifies a sorted array', () => {
+  const inputArray = [1, 2, 3, 4, 5]; // Sorted array input
+  const returnedValue = checkIfSorted(inputArray);
+  expect(returnedValue).toBe(true);
+});
+
+test('checkIfSorted correctly identifies an unsorted array', () => {
+  const inputArray = [1, 3, 2, 4, 5]; // Unsorted array input
+  const returnedValue = checkIfSorted(inputArray);
+  expect(returnedValue).toBe(false);
+});
+
+test('checkIfSorted correctly identifies an empty array', () => {
+  const inputArray = []; // Empty array input
+  const returnedValue = checkIfSorted(inputArray);
+  expect(returnedValue).toBe(true);
+});
+
+// Test getShuffled
+test('getShuffled returns an empty array for empty input', () => {
+  const inputArray = [];
+  const shuffledArray = getShuffled(inputArray);
+  expect(shuffledArray).toEqual([]);
+});
+
+test('getShuffled returns the same array for single-element input', () => {
+  const inputArray = [42];
+  const shuffledArray = getShuffled(inputArray);
+  expect(shuffledArray).toEqual(inputArray);
+});
+
+test('getShuffled returns a shuffled array for two-element input', () => {
+  const inputArray = [42, 17];
+  const shuffledArray = getShuffled(inputArray);
+  // Check if the shuffled array has the same elements (order may vary)
+  expect(shuffledArray).toContain(42);
+  expect(shuffledArray).toContain(17);
+});
+
+test('getShuffled returns a shuffled array for a larger input array', () => {
+  const inputArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const shuffledArray = getShuffled(inputArray);
+  // Check if the shuffled array contains all the elements from the input array
+  expect(shuffledArray).toEqual(expect.arrayContaining(inputArray));
+  // Check if the shuffled array is not in the same order as the input array
+  expect(shuffledArray).not.toEqual(inputArray);
+});
+
+// Helper function for testing shuffleArray
+function isRandomlyShuffled(array) {
+  const originalArray = [...array];
+  array.sort(); // Sort the array to check if it's not in its original order
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] !== originalArray[i]) {
+      return true; // The array is not in its original order, indicating randomness
+    }
+  }
+  return false; // The array is still in its original order
+}
+
+test('shuffleArray correctly shuffles an array with a single element.', () => {
+  const inputArray = [5];
+  shuffleArray(inputArray);
+  expect(isRandomlyShuffled(inputArray)).toBe(false);
+});
+
+// Helper function for testing shuffleArray with tolerance
+function testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent) {
+  const originalArray = [...inputArray];
+  const successTrials = numTrials * (1 - tolerancePercent / 100);
+
+  let shuffledCount = 0;
+  let notShuffledCount = 0;
+
+  for (let trial = 0; trial < numTrials; trial++) {
+    const shuffledArray = getShuffled(inputArray);
+
+    if (originalArray.some((value, index) => value !== shuffledArray[index])) {
+      shuffledCount++;
+    } else {
+      notShuffledCount++;
+    }
+  }
+
+  const shuffledPercentage = shuffledCount / numTrials;
+  const notShuffledPercentage = notShuffledCount / numTrials;
+
+  if (inputArray.length > 1) {
+    const expectedAverageUnsortedAmount = 1 / (Math.pow(2, (inputArray.length - 1)));
+    expect(shuffledPercentage).toBeGreaterThan((1 - tolerancePercent / 100) * (1 - expectedAverageUnsortedAmount));
+    expect(notShuffledPercentage).toBeLessThan((1 + tolerancePercent / 100) * expectedAverageUnsortedAmount);
+  }
+}
+
+test('shuffleArray correctly shuffles an array with 5 sorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [1, 2, 3, 4, 5];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 5 sorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [1, 2, 3, 4, 5];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 3 sorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [1, 2, 3];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 2 sorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [1, 5];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 1 element.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [2];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 0 elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 20 unsorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [2,3,4,5,8,9,10,11,15,16,17,12,13,14,1,6,7,19,18,20];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+test('shuffleArray correctly shuffles an array with 20 sorted elements.', () => {
+  console.log("NOTE: Due to randomness, this does have a chance to fail.");
+  const inputArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+  const numTrials = 1000;  // Number of shuffle trials
+  const tolerancePercent = 25;
+
+  testShuffleArrayWithTolerance(inputArray, numTrials, tolerancePercent);
+});
+
+// Test bogoSortDescription
+test('bogoSortSortDescription returns the expected description', () => {
+  expect(bogoSortDescription()).toBe("This algorithm randomly shuffles the items in the list, then checks if it's sorted.  This repeats until it's sorted. Time complexity expectation: O((n+1)!)");
+});
+
+
+// Test bogoSort
+test('bogoSort correctly sorts a small 5 element array', () => {
+  const inputArray = [5, 3, 1, 4, 2];
+  const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bogoSort correctly sorts a larger 10 element array', () => {
+  const inputArray = [10, 7, 8, 1, 3, 6, 2, 9, 4, 5];
+  const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bogoSort correctly sorts an empty array', () => {
+  const inputArray = [];
+  const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bogoSort correctly sorts an array with one element', () => {
+  const inputArray = [42];
+  const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bogoSort correctly sorts an already sorted array', () => {
+  const inputArray = [1, 2, 3, 4, 5];
+  const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
