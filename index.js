@@ -22,31 +22,52 @@ const checkIfSorted = (the_data_array) => {
     }
   }
   return true;
-}
+};
 
 const getShuffled = (the_data_array) => {
   const data_size = the_data_array.length;
-  if(data_size <= 1) {
-    return [...the_data_array]
+  if (data_size <= 1) {
+    return [...the_data_array];
   }
 
   const the_shuffled_array = [...the_data_array];
 
   for (let i = data_size - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [the_shuffled_array[i], the_shuffled_array[j]] = [the_shuffled_array[j], the_shuffled_array[i]];
+    [the_shuffled_array[i], the_shuffled_array[j]] = [
+      the_shuffled_array[j],
+      the_shuffled_array[i],
+    ];
   }
 
   return the_shuffled_array;
-}
+};
 
 const shuffleArray = (the_data_array) => {
   const shuffledArray = getShuffled(the_data_array);
   the_data_array.length = 0;
-  the_data_array.push(...shuffledArray)
-}
+  the_data_array.push(...shuffledArray);
+};
+//Algorithms
 
-const bogoSortDescription = () => `This algorithm randomly shuffles the items in the list, then checks if it's sorted.  This repeats until it's sorted. Time complexity expectation: O((n+1)!)`
+const bozoSortDescription = () =>
+  `This algorithm does the following until the list is sorted: pick two elements at random and swap them.  Expected time complexity: O((n!).`;
+const bozoSort = (the_data_array) => {
+  let randomIndexA;
+  let randomIndexB;
+  let temp;
+  while (!checkIfSorted(the_data_array)) {
+    randomIndexA = Math.floor(Math.random() * the_data_array.length);
+    randomIndexB = Math.floor(Math.random() * the_data_array.length);
+    temp = the_data_array[randomIndexB];
+    the_data_array[randomIndexB] = the_data_array[randomIndexA];
+    the_data_array[randomIndexA] = temp;
+  }
+  return the_data_array;
+};
+
+const bogoSortDescription = () =>
+  `This algorithm randomly shuffles the items in the list, then checks if it's sorted.  This repeats until it's sorted. Time complexity expectation: O((n+1)!)`;
 const bogoSort = (the_data_array) => {
   const data_size = the_data_array.length;
 
@@ -55,7 +76,7 @@ const bogoSort = (the_data_array) => {
   }
 
   return the_data_array;
-}
+};
 
 const sleepSortDescription = () =>
   `This algorithim uses time-based sorting. It creates a thread for each element, where each thread is initialized with the element's value. These threads set an alarm to wake up after a time equal to their value, sleep, and upon waking, add their value to an initially empty sorted array.  Time complexity: 0(n + max), where max is the value of the highest element.  Note: Does not work with negative values.`;
@@ -111,7 +132,7 @@ module.exports = {
   checkIfSorted,
   getShuffled,
   shuffleArray,
-  
+
   parrotSortDescription,
   parrotSort,
 
@@ -122,5 +143,8 @@ module.exports = {
   sleepSort,
 
   bogoSortDescription,
-  bogoSort
+  bogoSort,
+
+  bozoSortDescription,
+  bozoSort,
 };

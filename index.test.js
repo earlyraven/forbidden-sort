@@ -10,6 +10,8 @@ const {
   sleepSort,
   bogoSortDescription,
   bogoSort,
+  bozoSortDescription,
+  bozoSort,
 } = require('./index'); // Replace './index' with the appropriate path to your module
 
 // Test parrotSortDescription
@@ -302,5 +304,47 @@ test('bogoSort correctly sorts an array with one element', () => {
 test('bogoSort correctly sorts an already sorted array', () => {
   const inputArray = [1, 2, 3, 4, 5];
   const sortedArray = bogoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+// Test bozoSortDescription
+test('bozoSortDescription returns the expected description', () => {
+  expect(bozoSortDescription()).toBe("This algorithm does the following until the list is sorted: pick two elements at random and swap them.  Expected time complexity: O((n!).");
+});
+
+// Test bozoSort
+test('bozoSort correctly sorts an array with one element', () => {
+  const inputArray = [42];
+  const sortedArray = bozoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bozoSort correctly sorts an array with 4 unsorted elements', () => {
+  const inputArray = [42, 13, 25, 50];
+  const sortedArray = bozoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bozoSort correctly sorts an array with 0 elements', () => {
+  const inputArray = [];
+  const sortedArray = bozoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bozoSort correctly sorts an array with 1 element', () => {
+  const inputArray = [3];
+  const sortedArray = bozoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bozoSort correctly sorts an array with 6 unsorted elements', () => {
+  const inputArray = [3,1,4,2,5,8];
+  const sortedArray = bozoSort([...inputArray]);
+  expect(checkIfSorted(sortedArray)).toBe(true);
+});
+
+test('bozoSort correctly sorts an array with 8 sorted elements', () => {
+  const inputArray = [1,2,3,4,5,6,7,8];
+  const sortedArray = bozoSort([...inputArray]);
   expect(checkIfSorted(sortedArray)).toBe(true);
 });
